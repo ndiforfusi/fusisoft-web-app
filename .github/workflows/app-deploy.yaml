@@ -18,9 +18,9 @@ jobs:
       id: set_image_tag
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-          echo "IMAGE_TAG=4.0.0" >> $GITHUB_ENV
+          echo "IMAGE_TAG=5.0.0" >> $GITHUB_ENV
         else
-          echo "IMAGE_TAG=4.0.0" >> $GITHUB_ENV
+          echo "IMAGE_TAG=5.0.0" >> $GITHUB_ENV
         fi
 
     - name: Build and push Docker image
