@@ -41,5 +41,5 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker pull ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }}
-          docker service update --image ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }} web-app || \
+          docker service update --image ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }} web-app_web_app || \
           docker stack deploy -c docker-compose.yaml web-app
