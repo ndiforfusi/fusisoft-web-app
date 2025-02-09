@@ -20,7 +20,7 @@ jobs:
         if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
           echo "IMAGE_TAG=latest" >> $GITHUB_ENV
         else
-          echo "IMAGE_TAG=dev" >> $GITHUB_ENV
+          echo "IMAGE_TAG=3.0.0" >> $GITHUB_ENV
         fi
 
     - name: Build and push Docker image
@@ -42,4 +42,4 @@ jobs:
         script: |
           docker pull ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }}
           docker service update --image ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }} web-app || \
-          docker stack deploy -c docker-compose.yml web-app
+          docker stack deploy -c docker-compose.yaml web-app
