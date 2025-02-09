@@ -1,0 +1,45 @@
+name: Deploy to Docker Swarm
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set Image Tag
+      id: set_image_tag
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+        else
+          echo "IMAGE_TAG=dev" >> $GITHUB_ENV
+        fi
+
+    - name: Build and push Docker image
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        IMAGE_TAG: ${{ env.IMAGE_TAG }}
+      run: |
+        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+        docker build -t ndiforfusi/fusisoft-web-app:$IMAGE_TAG .
+        docker push ndiforfusi/fusisoft-web-app:$IMAGE_TAG
+
+    - name: Deploy to Docker Swarm
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker pull ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }}
+          docker service update --image ndiforfusi/fusisoft-web-app:${{ env.IMAGE_TAG }} web-app || \
+          docker stack deploy -c docker-compose.yml web-app

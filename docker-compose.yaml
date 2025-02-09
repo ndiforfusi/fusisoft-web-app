@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  web_app:
+    image: ndiforfusi/fusisoft-web-app:1.0.0
+    ports:
+      - "8000:80"
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
