@@ -30,8 +30,8 @@ jobs:
         IMAGE_TAG: ${{ env.IMAGE_TAG }}
       run: |
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-        docker build -t 1bigcj/c2squared-web-app:$IMAGE_TAG .
-        docker push 1bigcj/c2squared-web-app:$IMAGE_TAG
+        docker build -t 1bigcj/c2squared:$IMAGE_TAG .
+        docker push 1bigcj/c2squared:$IMAGE_TAG
 
     - name: Deploy to Docker Swarm
       uses: appleboy/ssh-action@master
@@ -41,5 +41,5 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker pull 1bigcj/c2squared-web-app:${{ env.IMAGE_TAG }}
-          docker service update --image 1bigcj/c2squared-web-app:${{ env.IMAGE_TAG }} web-app_web_app || \
+          docker service update --image 1bigcj/c2squared:${{ env.IMAGE_TAG }} web-app_web_app || \
           docker stack deploy -c docker-compose.yaml web-app
