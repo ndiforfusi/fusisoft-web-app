@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   web_app:
-    image: 1bigcj/c2squared:jess_3.0.0
+    image: 1bigcj/c2squared-web-app:jess_3.0.0
     ports:
       - "8000:80"
     deploy:
