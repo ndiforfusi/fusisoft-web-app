@@ -2,9 +2,9 @@ FROM ubuntu:24.04
 
 RUN apt-get update -y && apt-get install -y nginx
 
-WORKDIR /var/www/html
+WORKDIR /home/ubuntu/project
 
-COPY index.html /var/www/html
+COPY index.html /home/ubuntu/project
 
 ENV APP_ENV=Development
 
