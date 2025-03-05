@@ -41,5 +41,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker pull 1bigcj/c2squared-web-app:${{ env.IMAGE_TAG }}
+          docker service update --image 1bigcj/c2squared-web-app:${{ env.IMAGE_TAG }} web-app || \
           # Check if the service exists, if not, deploy it
           docker service ls | grep -q "web-app" || docker stack deploy -c docker-compose.yaml web-app
