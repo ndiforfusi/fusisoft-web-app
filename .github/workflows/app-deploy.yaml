@@ -33,6 +33,15 @@ jobs:
         docker build -t ndiforfusi/webapp-class39:$IMAGE_TAG .
         docker push ndiforfusi/webapp-class39:$IMAGE_TAG
 
+    - name: Copy docker-compose.yaml to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "docker-compose.yaml"
+        target: "/home/${{ secrets.EC2_USER }}/"
+
     - name: Deploy to Docker Swarm
       uses: appleboy/ssh-action@master
       with:
@@ -40,7 +49,6 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          cd /home/${{ secrets.EC2_USER }}/web-app
           docker pull ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }}
-          ls
-          # docker service update --image ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }} web-app_web_app || \
           docker stack deploy -c docker-compose.yaml web-app
