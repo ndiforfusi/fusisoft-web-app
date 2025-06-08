@@ -18,9 +18,9 @@ jobs:
       id: set_image_tag
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-          echo "IMAGE_TAG=3.0.0" >> $GITHUB_ENV
+          echo "IMAGE_TAG=4.0.0" >> $GITHUB_ENV
         else
-          echo "IMAGE_TAG=3.0.0" >> $GITHUB_ENV
+          echo "IMAGE_TAG=4.0.0" >> $GITHUB_ENV
         fi
 
     - name: Build and push Docker image
@@ -49,6 +49,5 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /home/${{ secrets.EC2_USER }}/web-app
           docker pull ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }}
           docker stack deploy -c docker-compose.yaml web-app
