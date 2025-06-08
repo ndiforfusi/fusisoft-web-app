@@ -41,5 +41,5 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker pull ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }}
-          docker service update --image ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }} web-app_web_app || \
+          # docker service update --image ndiforfusi/webapp-class39:${{ env.IMAGE_TAG }} web-app_web_app || \
           docker stack deploy -c docker-compose.yaml web-app
