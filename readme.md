@@ -54,7 +54,7 @@ ndiforfusi/webapp-class39
 Update the Jenkinsfile if using a different image name.
 
 🧰 CI/CD Pipeline Workflow
-Trigger
+Trigger pipeline
 
 The pipeline runs automatically when:
 
