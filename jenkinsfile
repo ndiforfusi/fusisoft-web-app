@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'ndiforfusi/webapp-class39'
+        IMAGE_NAME = 'ndiforfusi/webapp-class41'
         // Optional: hardcode or move these into Jenkins global env / credentials
         EC2_HOST = 'YOUR_EC2_HOST_DNS_OR_IP'
         EC2_USER = 'ec2-user'
