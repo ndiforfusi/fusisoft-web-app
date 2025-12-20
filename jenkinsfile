@@ -1,0 +1,88 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'ndiforfusi/webapp-class39'
+        // Optional: hardcode or move these into Jenkins global env / credentials
+        EC2_HOST = 'YOUR_EC2_HOST_DNS_OR_IP'
+        EC2_USER = 'ec2-user'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Uses the repo configured in the Jenkins job (Multibranch or Pipeline)
+                checkout scm
+            }
+        }
+
+        stage('Set Image Tag') {
+            steps {
+                script {
+                    // Mirror your GitHub Actions logic (currently same tag either way)
+                    if (env.BRANCH_NAME == 'main') {
+                        env.IMAGE_TAG = '4.0.0'
+                    } else if (env.BRANCH_NAME == 'development') {
+                        env.IMAGE_TAG = '4.0.0'
+                    } else {
+                        // optional: fallback if another branch runs
+                        env.IMAGE_TAG = '4.0.0'
+                    }
+                    echo "Using image tag: ${env.IMAGE_TAG}"
+                }
+            }
+        }
+
+        stage('Build & Push Docker Image') {
+            environment {
+                // Jenkins credential type: "Username with password"
+                // ID example: dockerhub-credentials (set in Manage Jenkins → Credentials)
+                DOCKERHUB = credentials('dockerhub-credentials')
+            }
+            steps {
+                sh '''
+                  echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
+
+                  docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                  docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                '''
+            }
+        }
+
+        stage('Copy docker-compose.yaml to EC2') {
+            steps {
+                // Jenkins credential type: "SSH Username with private key"
+                // ID example: ec2-ssh-key
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh '''
+                      scp -o StrictHostKeyChecking=no \
+                        docker-compose.yaml \
+                        ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Docker Swarm') {
+            steps {
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh '''
+                      ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+                        docker pull ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker stack deploy -c docker-compose.yaml web-app
+                      EOF
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Deployment to Docker Swarm completed successfully."
+        }
+        failure {
+            echo "Deployment failed. Check the logs for details."
+        }
+    }
+}
