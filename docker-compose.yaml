@@ -3,7 +3,7 @@ services:
   web_app:
     image: ndiforfusi/webapp-class39:4.0.0
     ports:
-      - "8000:80"
+      - "9000:80"
     deploy:
       replicas: 3
       restart_policy:
