@@ -44,7 +44,9 @@ Jenkins Credentials Needed
 ID	Type	Purpose
 dockerhub-credentials	Username + Password	Push image to Docker Hub
 ec2-ssh-key	SSH private key	Connect to EC2 host
-⚙️ Docker Hub Repository
+
+
+Docker Hub Repository
 
 Example:
 
@@ -92,7 +94,8 @@ Application updates instantly
 
 Previous stack services replaced seamlessly
 
-📁 Docker Compose Example
+
+5. Docker Compose Example
 
 Your docker-compose.yaml should resemble:
 
@@ -108,7 +111,7 @@ services:
       restart_policy:
         condition: on-failure
 
-🌐 Accessing the Application
+5. Accessing the Application
 
 Once deployed:
 
