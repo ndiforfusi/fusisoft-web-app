@@ -1,4 +1,4 @@
-🚀 Deploying WebApp-Class39 Using Jenkins and Docker Swarm
+1. Deploying WebApp-Class39 Using Jenkins and Docker Swarm
 
 This guide provides step-by-step instructions on how to deploy the webapp-class39 application to a Docker Swarm cluster running on an EC2 Linux host using a Jenkins CI/CD pipeline.
 
@@ -12,7 +12,7 @@ Secure file transfer to EC2
 
 Swarm deployment using docker stack deploy
 
-📦 Prerequisites
+2. Prerequisites
 1️⃣ Infrastructure Requirements
 Component	Description
 EC2 instance	Amazon Linux / Ubuntu with Docker + Swarm configured
@@ -53,7 +53,7 @@ ndiforfusi/webapp-class39
 
 Update the Jenkinsfile if using a different image name.
 
-🧰 CI/CD Pipeline Workflow
+3. CI/CD Pipeline Workflow
 Trigger pipeline
 
 The pipeline runs automatically when:
@@ -69,7 +69,8 @@ Set Tag	Determine Docker image tag
 Build & Push	Build container & push to Docker Hub
 Copy Compose File	Transfer docker-compose.yaml to EC2
 Swarm Deploy	Pull updated image & deploy via Docker Swarm
-🧱 Jenkinsfile Summary
+
+4. Jenkinsfile Summary
 
 The Jenkins pipeline:
 
