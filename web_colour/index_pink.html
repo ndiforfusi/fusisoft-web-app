@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Tech Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-500 text-white font-sans flex flex-col items-center justify-center h-screen text-center transition-all">
+
+    <!-- Dark Mode Toggle -->
+    <div class="absolute top-5 right-5">
+        <button id="toggleDarkMode" class="bg-white text-blue-500 px-4 py-2 rounded-full shadow-lg">
+            🌙 Dark Mode
+        </button>
+    </div>
+
+    <div class="max-w-2xl">
+        <h1 class="text-5xl font-bold animate-bounce">🚀 Welcome to the DevOps Demo</h1>
+        <p class="text-lg mt-4">This modern single-page app is deployed using Docker in a DevOps pipeline.</p>
+
+        <!-- Features Section -->
+        <div class="mt-6 space-y-4">
+            <div class="p-4 bg-white text-blue-500 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold">✅ Built with CI/CD</h2>
+                <p>Automated deployments ensure seamless updates.</p>
+            </div>
+            <div class="p-4 bg-white text-blue-500 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold">🐳 Deployed in Docker Swarm</h2>
+                <p>Containerized and scalable infrastructure.</p>
+            </div>
+            <div class="p-4 bg-white text-blue-500 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold">🔧 Managed with Terraform</h2>
+                <p>Infrastructure as Code (IaC) keeps everything repeatable.</p>
+            </div>
+        </div>
+
+        <!-- Call-to-Action Button -->
+        <button class="mt-6 bg-white text-blue-500 px-6 py-3 rounded-lg text-lg font-semibold shadow-lg hover:bg-blue-300 transition">
+            Learn More
+        </button>
+    </div>
+
+    <script>
+        document.getElementById('toggleDarkMode').addEventListener('click', function () {
+            document.body.classList.toggle('bg-gray-900');
+            document.body.classList.toggle('text-white');
+            document.body.classList.toggle('text-blue-500');
+        });
+    </script>
+</body>
+</html>
