@@ -1,0 +1,8 @@
+/* Small enhancements without fighting Tailwind */
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}

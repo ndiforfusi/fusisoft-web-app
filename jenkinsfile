@@ -1,0 +1,62 @@
+pipeline {
+  agent { label 'java-build-agent' }
+  options {timestamps() }
+  stages {
+
+    stage('1. Checkout Code') {
+      steps {
+        echo 'Cloning source code from GitHub...'
+        checkout scm
+      }
+    }
+
+    stage('2. Test Code') {
+      steps {
+        echo 'Running basic checks...'
+        sh '''
+          test -f Dockerfile
+          test -f docker-compose.yml
+          docker compose config
+        '''
+      }
+    }
+
+    stage('3. Stop Existing App') {
+      steps {
+        echo 'Stopping any running containers...'
+        sh '''
+          docker compose down || true
+        '''
+      }
+    }
+
+    stage('4. Build & Deploy') {
+      steps {
+        echo 'Building image and starting containers...'
+        sh '''
+          docker build -t webapp:1.0.0 .
+          docker compose up -d 
+        '''
+      }
+    }
+
+    stage('Smoke Test') {
+      steps {
+        echo 'Verifying application is running...'
+        sh '''
+          sleep 5
+          curl -f http://localhost:8000
+        '''
+      }
+    }
+  }
+
+  post {
+    success {
+      echo '✅ Deployment successful'
+    }
+    failure {
+      echo '❌ Deployment failed'
+    }
+  }
+}

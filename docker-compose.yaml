@@ -1,10 +1,10 @@
 version: "3.8"
 services:
   web_app:
-    image: webapp:2.0
+    image: webapp:1.0.0
     ports:
       - "8000:80"
     deploy:
-      replicas: 3
+      replicas: 1 
       restart_policy:
         condition: on-failure
