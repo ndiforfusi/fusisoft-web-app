@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevOps Tech Demo</title>
+
+    <!-- Tailwind via CDN (ok for demos) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Subdir-safe: relative links -->
+    <link rel="stylesheet" href="./assets/styles.css" />
+
+    <meta name="description" content="A DevOps demo site served from a subdirectory behind Nginx." />
+</head>
+
+<body
+    class="min-h-screen bg-gradient-to-br from-green-600 via-green-500 to-emerald-600 text-white antialiased transition-colors">
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-30 backdrop-blur bg-black/10 border-b border-white/10">
+        <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+            <a href="./" class="flex items-center gap-2 font-bold tracking-wide">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">🚀</span>
+                <span>DevOps Demo</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-6 text-sm">
+                <a class="hover:text-white/80" href="#features">Features</a>
+                <a class="hover:text-white/80" href="#pipeline">Pipeline</a>
+                <a class="hover:text-white/80" href="#status">Live Status</a>
+                <a class="hover:text-white/80" href="#faq">FAQ</a>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="toggleDarkMode"
+                    class="rounded-xl bg-white text-green-700 px-4 py-2 shadow hover:bg-white/90 transition"
+                    aria-label="Toggle dark mode">
+                    🌙 Dark Mode
+                </button>
+
+                <a class="rounded-xl bg-black/20 px-4 py-2 border border-white/15 hover:bg-black/30 transition hidden sm:inline-flex"
+                    href="#pipeline">
+                    View Pipeline
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <main class="mx-auto max-w-6xl px-4">
+        <section class="py-14 md:py-20">
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <div>
+                    <p
+                        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm border border-white/10">
+                        <span class="h-2 w-2 rounded-full bg-lime-300 animate-pulse"></span>
+                        Running behind Nginx • Subdirectory-ready
+                    </p>
+
+                    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight">
+                        Ship faster with
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-lime-200">
+                            CI/CD + Containers
+                        </span>
+                    </h1>
+
+                    <p class="mt-5 text-white/90 text-lg leading-relaxed">
+                        This is a modern static demo app designed to be deployed via Docker and served from a
+                        subdirectory (e.g.
+                        <code class="px-2 py-1 rounded bg-black/20 border border-white/10">/devops-demo/</code>) using
+                        Nginx.
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a href="#features"
+                            class="rounded-xl bg-white text-green-700 px-6 py-3 font-semibold shadow hover:bg-white/90 transition">
+                            Explore Features
+                        </a>
+
+                        <button id="openModal"
+                            class="rounded-xl bg-black/20 px-6 py-3 font-semibold border border-white/15 hover:bg-black/30 transition">
+                            See Architecture
+                        </button>
+                    </div>
+
+                    <div class="mt-8 grid grid-cols-3 gap-3 text-sm">
+                        <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <p class="text-white/70">Deploy</p>
+                            <p class="text-xl font-bold">Docker</p>
+                        </div>
+                        <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <p class="text-white/70">Serve</p>
+                            <p class="text-xl font-bold">Nginx</p>
+                        </div>
+                        <div class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <p class="text-white/70">Scale</p>
+                            <p class="text-xl font-bold">Cloud</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right panel -->
+                <div class="rounded-3xl bg-black/20 border border-white/10 p-6 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold">Environment</h2>
+                        <span id="envBadge"
+                            class="text-xs px-3 py-1 rounded-full bg-white/10 border border-white/10">Loading…</span>
+                    </div>
+
+                    <div class="mt-4 space-y-3 text-sm">
+                        <div
+                            class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <span class="text-white/80">Base Path</span>
+                            <code id="basePath" class="text-white font-semibold">/</code>
+                        </div>
+                        <div
+                            class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <span class="text-white/80">Current URL</span>
+                            <code id="currentUrl" class="text-white font-semibold truncate max-w-[60%]">—</code>
+                        </div>
+                        <div
+                            class="flex items-center justify-between rounded-2xl bg-white/10 border border-white/10 p-4">
+                            <span class="text-white/80">Build Time</span>
+                            <code id="buildTime" class="text-white font-semibold">—</code>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <p class="text-white/80 font-semibold mb-2">Quick Actions</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="copyUrl"
+                                class="rounded-xl bg-white text-green-700 px-4 py-2 font-semibold hover:bg-white/90 transition">
+                                Copy URL
+                            </button>
+                            <a class="rounded-xl bg-black/20 px-4 py-2 border border-white/15 hover:bg-black/30 transition"
+                                href="#status">
+                                Check Status
+                            </a>
+                            <a class="rounded-xl bg-black/20 px-4 py-2 border border-white/15 hover:bg-black/30 transition"
+                                href="#faq">
+                                FAQ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="py-14">
+            <div class="flex items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold">What this demo showcases</h2>
+                    <p class="mt-2 text-white/85">
+                        A polished UI, subdirectory-safe routing, and small interactive components (all static).
+                    </p>
+                </div>
+
+                <div class="hidden md:flex items-center gap-2">
+                    <span class="text-xs px-3 py-1 rounded-full bg-white/10 border border-white/10">Static</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-white/10 border border-white/10">Responsive</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-white/10 border border-white/10">Accessible</span>
+                </div>
+            </div>
+
+            <div class="mt-8 grid md:grid-cols-3 gap-4">
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6 hover:bg-white/15 transition">
+                    <h3 class="text-xl font-bold">✅ CI/CD Ready</h3>
+                    <p class="mt-2 text-white/85">Designed for automated build + deploy workflows.</p>
+                </div>
+
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6 hover:bg-white/15 transition">
+                    <h3 class="text-xl font-bold">🐳 Docker Deploy</h3>
+                    <p class="mt-2 text-white/85">Static site served with Nginx inside a container.</p>
+                </div>
+
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6 hover:bg-white/15 transition">
+                    <h3 class="text-xl font-bold">🔧 IaC Friendly</h3>
+                    <p class="mt-2 text-white/85">Easy to host on EC2, ECS, K8s, or any VM behind Nginx.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline -->
+        <section id="pipeline" class="py-14">
+            <h2 class="text-3xl md:text-4xl font-extrabold">Example delivery pipeline</h2>
+            <p class="mt-2 text-white/85">This is a visual flow you can discuss during demos.</p>
+
+            <ol class="mt-8 grid md:grid-cols-5 gap-3 text-sm">
+                <li class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="font-bold">1) Commit</p>
+                    <p class="text-white/80 mt-1">Push to GitHub</p>
+                </li>
+                <li class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="font-bold">2) Build</p>
+                    <p class="text-white/80 mt-1">Docker image</p>
+                </li>
+                <li class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="font-bold">3) Test</p>
+                    <p class="text-white/80 mt-1">Lint + checks</p>
+                </li>
+                <li class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="font-bold">4) Publish</p>
+                    <p class="text-white/80 mt-1">Push to registry</p>
+                </li>
+                <li class="rounded-2xl bg-white/10 border border-white/10 p-4">
+                    <p class="font-bold">5) Deploy</p>
+                    <p class="text-white/80 mt-1">Nginx serves /devops-demo/</p>
+                </li>
+            </ol>
+        </section>
+
+        <!-- Status -->
+        <section id="status" class="py-14">
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold">Live demo status</h2>
+                    <p class="mt-2 text-white/85">Simple client-side indicators (no backend required).</p>
+                </div>
+                <button id="runChecks"
+                    class="rounded-xl bg-white text-green-700 px-5 py-3 font-semibold shadow hover:bg-white/90 transition">
+                    Run Checks
+                </button>
+            </div>
+
+            <div class="mt-8 grid md:grid-cols-3 gap-4">
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6">
+                    <p class="text-white/75 text-sm">Static Assets</p>
+                    <p id="assetStatus" class="mt-2 text-xl font-bold">—</p>
+                </div>
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6">
+                    <p class="text-white/75 text-sm">Subdirectory Safe</p>
+                    <p id="subdirStatus" class="mt-2 text-xl font-bold">—</p>
+                </div>
+                <div class="rounded-3xl bg-white/10 border border-white/10 p-6">
+                    <p class="text-white/75 text-sm">Dark Mode</p>
+                    <p id="darkStatus" class="mt-2 text-xl font-bold">—</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="py-14 pb-20">
+            <h2 class="text-3xl md:text-4xl font-extrabold">FAQ</h2>
+            <div class="mt-8 space-y-3">
+                <details class="rounded-2xl bg-white/10 border border-white/10 p-5">
+                    <summary class="cursor-pointer font-semibold">Why use relative links?</summary>
+                    <p class="mt-2 text-white/85">
+                        Relative links (like <code
+                            class="px-2 py-1 rounded bg-black/20 border border-white/10">./assets/app.js</code>)
+                        work whether the site is served at <code
+                            class="px-2 py-1 rounded bg-black/20 border border-white/10">/</code>
+                        or under <code
+                            class="px-2 py-1 rounded bg-black/20 border border-white/10">/devops-demo/</code>.
+                    </p>
+                </details>
+
+                <details class="rounded-2xl bg-white/10 border border-white/10 p-5">
+                    <summary class="cursor-pointer font-semibold">Can I add API calls later?</summary>
+                    <p class="mt-2 text-white/85">
+                        Yes. Add endpoints in Nginx (reverse proxy) and update the JS to call them.
+                    </p>
+                </details>
+
+                <details class="rounded-2xl bg-white/10 border border-white/10 p-5">
+                    <summary class="cursor-pointer font-semibold">Is Tailwind CDN production-ready?</summary>
+                    <p class="mt-2 text-white/85">
+                        CDN is fine for demos. For production, compile Tailwind in a build step and serve static CSS.
+                    </p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-black/10">
+        <div class="mx-auto max-w-6xl px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-white/75 text-sm">© <span id="year"></span> DevOps Demo • Served by Nginx</p>
+            <p class="text-white/75 text-sm">
+                Base Path: <code id="footerBasePath"
+                    class="px-2 py-1 rounded bg-black/20 border border-white/10">/</code>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 hidden items-center justify-center p-4 z-50">
+        <div class="absolute inset-0 bg-black/60" id="closeModalBg"></div>
+
+        <div class="relative w-full max-w-2xl rounded-3xl bg-white text-slate-900 p-6 shadow-2xl">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h3 class="text-2xl font-extrabold">Demo Architecture</h3>
+                    <p class="mt-2 text-slate-700">
+                        Static site served from a subdirectory behind Nginx inside a Docker container.
+                    </p>
+                </div>
+                <button id="closeModal" class="rounded-xl px-3 py-2 bg-slate-100 hover:bg-slate-200 transition">
+                    ✖
+                </button>
+            </div>
+
+            <div class="mt-5 grid sm:grid-cols-3 gap-3 text-sm">
+                <div class="rounded-2xl bg-slate-50 p-4 border">
+                    <p class="font-bold">Browser</p>
+                    <p class="text-slate-600 mt-1">GET /devops-demo/</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-4 border">
+                    <p class="font-bold">Nginx</p>
+                    <p class="text-slate-600 mt-1">Serves static assets</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-4 border">
+                    <p class="font-bold">Container</p>
+                    <p class="text-slate-600 mt-1">Ubuntu + Nginx</p>
+                </div>
+            </div>
+
+            <p class="mt-5 text-slate-700 text-sm">
+                Tip: Keep all asset paths relative (./assets/...) so the same build works at root or any subdirectory.
+            </p>
+        </div>
+    </div>
+
+    <script src="./assets/app.js"></script>
+</body>
+
+</html>
