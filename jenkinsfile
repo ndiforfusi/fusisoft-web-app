@@ -15,7 +15,7 @@ pipeline {
         echo 'Running basic checks...'
         sh '''
           test -f Dockerfile
-          test -f docker-compose.yml
+          test -f docker-compose.yaml
           docker compose config
         '''
       }
